@@ -17,13 +17,17 @@ public class Main {
                 .enableIntents(GatewayIntent.MESSAGE_CONTENT)
                 .addEventListeners(new MessageListener())
                 .addEventListeners(new SlashBot())
-                .setActivity(Activity.playing("현재 초기 개발 중"))
+                .setActivity(Activity.playing("현재 초기 개발"))
                 .build();// enables explicit access to message.getContentDisplay()
+        System.out.println("Build complete");
         System.out.println("Execute normaly");
         CommandListUpdateAction commands = jda.updateCommands();
         loadCommands(commands);
-        System.out.println("set Commands complete");
+        System.out.println("Set Commands complete");
     }
+    // 슬래시 명령어를 추가하기 위해서는 commands.addCommands()를 사용해야 한다.
+    // SlashBot 클래스에서 스위치문에 추가해야 한다.
+    // SlashBot 클래스에서 함수를 추가해야한다.
     public static void loadCommands(CommandListUpdateAction commands){
         commands.addCommands(
                 Commands.slash("ping","Calculate ping of the bot")
@@ -43,6 +47,16 @@ public class Main {
         commands.addCommands(
                 Commands.slash("저메추", "저녁 메뉴 추천")
         );
+        commands.addCommands(
+                Commands.slash("quiz", "퀴즈를 내줍니다.")
+        );
+        commands.addCommands(
+                Commands.slash("clear", "채팅을 지워줍니다.")
+                        .addOptions(
+                                new OptionData(OptionType.INTEGER, "amount", "지울 채팅의 개수를 입력해주세요")
+                                        .setRequired(true))
+        );
         commands.queue();
     }
+
 }

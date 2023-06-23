@@ -1,5 +1,10 @@
 package me.byun.bot;
 
+import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.channel.middleman.GuildChannel;
+import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
@@ -21,6 +26,12 @@ public class SlashBot extends ListenerAdapter {
             case "저메추":
                 recommendFood(event);
                 break;
+            case "quiz":
+                quiz(event);
+                break;
+            case "clear":
+                clear(event);
+                break;
             default:
                 event.reply("I can't handle that command right now :(").setEphemeral(true).queue();
         }
@@ -33,7 +44,6 @@ public class SlashBot extends ListenerAdapter {
                         event.getHook().editOriginalFormat("Pong: %d ms", System.currentTimeMillis() - time)
                 ).queue();
     }
-
     public void team(SlashCommandInteractionEvent event){
         String str = event.getOption("players").getAsString();
         String msg = "입력: " + str;
@@ -105,7 +115,37 @@ public class SlashBot extends ListenerAdapter {
         String response = "추천 음식: " + recommendedFood;
         event.reply(response).setEphemeral(false).queue();
     }
+    //Todo: quiz
+    public void quiz(SlashCommandInteractionEvent event){
+        event.getChannel().getId();
+        String[] questions = {
+                "1+1은?",
+                "2+2는?",
+                "3+3은?",
+                "4+4는?",
+                "5+5는?",
+                "6+6은?",
+                "7+7은?",
+                "8+8은?",
+                "9+9는?" };
 
+        event.reply("퀴즈를 시작합니다!").setEphemeral(false).queue();
+        MessageListener.activateQuizCommand(event);
+    }
+    public void clear(SlashCommandInteractionEvent event) {
+        int amount = event.getOption("amount").getAsInt();
+        Member selfMember = event.getGuild().getSelfMember();
+        if (selfMember.hasPermission((GuildChannel) event.getChannel(), Permission.MESSAGE_MANAGE)) {
+            event.getChannel().getHistory().retrievePast(amount).queue(messages -> {
+                for (Message message : messages) {
+                    message.delete().queue();
+                }
+                event.reply("채팅을 " + amount + "개 삭제했습니다.").setEphemeral(false).queue();
+            });
+        }else {
+            event.reply("채팅을 삭제할 권한이 없습니다.").setEphemeral(true).queue();
+        }
+    }
     public static void insertionSort(int[] arr) {
         int n = arr.length;
 
