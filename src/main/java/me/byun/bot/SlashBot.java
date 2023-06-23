@@ -25,6 +25,7 @@ public class SlashBot extends ListenerAdapter {
                 event.reply("I can't handle that command right now :(").setEphemeral(true).queue();
         }
     }
+
     public void ping(SlashCommandInteractionEvent event){
         long time = System.currentTimeMillis();
         event.reply("Pong!").setEphemeral(false) // reply or acknowledge (ephemeral true == one on one message)
@@ -32,6 +33,7 @@ public class SlashBot extends ListenerAdapter {
                         event.getHook().editOriginalFormat("Pong: %d ms", System.currentTimeMillis() - time)
                 ).queue();
     }
+
     public void team(SlashCommandInteractionEvent event){
         String str = event.getOption("players").getAsString();
         String msg = "입력: " + str;
@@ -51,6 +53,7 @@ public class SlashBot extends ListenerAdapter {
         for (int i = 0; i < playerList.size(); i++) {
             if (i % 2 == 0) {
                 team1.add(playerList.get(i));
+
             } else {
                 team2.add(playerList.get(i));
             }
@@ -102,8 +105,6 @@ public class SlashBot extends ListenerAdapter {
         String response = "추천 음식: " + recommendedFood;
         event.reply(response).setEphemeral(false).queue();
     }
-
-
 
     public static void insertionSort(int[] arr) {
         int n = arr.length;
