@@ -117,20 +117,14 @@ public class SlashBot extends ListenerAdapter {
     }
     //Todo: quiz
     public void quiz(SlashCommandInteractionEvent event){
-        event.getChannel().getId();
-        String[] questions = {
-                "1+1은?",
-                "2+2는?",
-                "3+3은?",
-                "4+4는?",
-                "5+5는?",
-                "6+6은?",
-                "7+7은?",
-                "8+8은?",
-                "9+9는?" };
-
+        String serverId = event.getGuild().getId();
+        Quiz serverQuiz = Quiz.getInstance(serverId);
+        if(serverQuiz.checkQuiz(event)){
+            event.reply("이미 진행중인 퀴즈가 있습니다.").setEphemeral(true).queue();
+            return;
+        }
+        serverQuiz.startQuiz(serverId);
         event.reply("퀴즈를 시작합니다!").setEphemeral(false).queue();
-        MessageListener.activateQuizCommand(event);
     }
     public void clear(SlashCommandInteractionEvent event) {
         int amount = event.getOption("amount").getAsInt();

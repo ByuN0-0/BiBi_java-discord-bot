@@ -5,19 +5,23 @@ import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 public class MessageListener extends ListenerAdapter
 {
-    private static Map<String, Boolean> quizChannelStatus = new HashMap<>();
     @Override
     public void onMessageReceived(MessageReceivedEvent event)
     {
+        String serverId = event.getGuild().getId();
         MessageChannel channel = event.getChannel();
         String channelId = channel.getId();
         String messageContent = event.getMessage().getContentDisplay();
+        Quiz quiz = Quiz.getInstance(serverId);
+
         if (event.isFromType(ChannelType.PRIVATE)) {
             System.out.printf("개인채널 [PM] %s: %s\n", event.getAuthor().getName(),
                     event.getMessage().getContentDisplay());
@@ -28,18 +32,20 @@ public class MessageListener extends ListenerAdapter
                     event.getMessage().getContentDisplay());
         }
         if (event.getAuthor().isBot()) return;
-        if (quizChannelStatus.containsKey(channelId) && quizChannelStatus.get(channelId)) {
-            if (messageContent.equals("퀴즈 끝")) {
-                quizChannelStatus.put(channelId, false);
-                channel.sendMessage("퀴즈가 종료되었습니다!").queue();
+
+        if (quiz.checkQuiz(event)){
+            if(messageContent.equals("퀴즈끝")){
+                quiz.endQuiz(serverId);
+                event.getChannel().sendMessage("퀴즈종료").queue();
                 return;
             }
-            channel.sendMessage("퀴즈 진행중!").queue();
-            return;
+            //Todo: 퀴즈 진행
         }
-        replyEventMessage(event, messageContent);
+        else {
+            replyEventMessage(event, messageContent);
+        }
     }
-    public void replyEventMessage(MessageReceivedEvent event, String msg){
+    public void replyEventMessage(MessageReceivedEvent event, @NotNull String msg){
         if(msg.equals("조서연멍청이")) {
             event.getChannel().sendMessage("인졍!").queue();
             return;
@@ -48,11 +54,5 @@ public class MessageListener extends ListenerAdapter
             event.getChannel().sendMessage("바바잉!").queue();
             return;
         }
-    }
-    public static void activateQuizCommand(SlashCommandInteractionEvent event) {
-        MessageChannel channel = event.getChannel();
-        String channelId = event.getChannel().getId();
-        quizChannelStatus.put(channelId, true);
-        channel.sendMessage("-----퀴즈 진행 중-----").queue();
     }
 }
