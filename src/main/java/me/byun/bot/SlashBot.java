@@ -4,7 +4,6 @@ import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.channel.middleman.GuildChannel;
-import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
@@ -119,11 +118,11 @@ public class SlashBot extends ListenerAdapter {
     public void quiz(SlashCommandInteractionEvent event){
         String serverId = event.getGuild().getId();
         Quiz serverQuiz = Quiz.getInstance(serverId);
-        if(serverQuiz.checkQuiz(event)){
+        if(serverQuiz.checkQuiz()){
             event.reply("이미 진행중인 퀴즈가 있습니다.").setEphemeral(true).queue();
             return;
         }
-        serverQuiz.startQuiz(serverId);
+        serverQuiz.startQuiz(serverId, event.getChannel());
         event.reply("퀴즈를 시작합니다!").setEphemeral(false).queue();
     }
     public void clear(SlashCommandInteractionEvent event) {
