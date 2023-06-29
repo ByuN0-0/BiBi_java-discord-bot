@@ -69,7 +69,7 @@ public class Quiz {
                 }
                 channel.sendMessage("남은 시간: " + currentIndex ).queue();
                 try {
-                    Thread.sleep(100);
+                    Thread.sleep(250);
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
@@ -89,7 +89,6 @@ public class Quiz {
                 }
             }
         });
-
         quizThread.start();
     }
     /*public void quizCycle() {
