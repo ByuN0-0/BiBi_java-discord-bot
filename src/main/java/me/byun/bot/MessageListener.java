@@ -11,6 +11,7 @@ import java.util.*;
 
 public class MessageListener extends ListenerAdapter
 {
+    int answerCount = 0;
     @Override
     public void onMessageReceived(MessageReceivedEvent event)
     {
@@ -29,21 +30,30 @@ public class MessageListener extends ListenerAdapter
                     channel.getName(), event.getMember().getEffectiveName(),
                     event.getMessage().getContentDisplay());
         }
+
         if (event.getAuthor().isBot()) return;
 
         if (quiz.checkQuiz()){ //퀴즈가 진행중이면
             //Todo: 퀴즈 진행 여기서 퀴즈가 정답인지 체크
             quiz.setUserAnswer(messageContent, channel, event.getAuthor().getName());
             //channel.sendMessage("퀴즈 중").queue();
+            if(quiz.checkAnswer(messageContent)&&answerCount==0){
+                channel.sendMessage(event.getAuthor().getName()+"님 정답입니다!").queue();
+                answerCount++;
+                quiz.setNextQuiz(true);
+                return;
+            }
             
             if(messageContent.equals("퀴즈끝")){ //퀴즈 종료
                 quiz.endQuiz(serverId);
                 event.getChannel().sendMessage("퀴즈종료").queue();
                 return;
             }
+            resetAnswerCount();
         }
-        replyEventMessage(event, messageContent);
-
+        else {
+            replyEventMessage(event, messageContent);
+        }
     }
     public void replyEventMessage(MessageReceivedEvent event, @NotNull String msg){
         if(msg.equals("조서연멍청이")) {
@@ -54,5 +64,8 @@ public class MessageListener extends ListenerAdapter
             event.getChannel().sendMessage("바바잉!").queue();
             return;
         }
+    }
+    public void resetAnswerCount(){
+        answerCount = 0;
     }
 }

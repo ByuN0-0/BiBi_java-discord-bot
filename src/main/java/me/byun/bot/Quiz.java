@@ -7,6 +7,7 @@ import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEve
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -14,12 +15,14 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class Quiz {
     private static Map<String, Quiz> quizMap = new HashMap<>();
+    private static Map<String, String> member = new HashMap<>();
     private String serverId;
     private String userAnswer;
     private String previousAnswer;
     private String lastUser;
     private boolean isQuizStarted;
     private MessageChannelUnion channel;
+    private boolean nextQuiz;
 
     private Quiz(String serverId){
         this.serverId = serverId;
@@ -27,6 +30,7 @@ public class Quiz {
         this.userAnswer = null;
         this.previousAnswer = null;
         this.lastUser = null;
+        this.nextQuiz = false;
     }
     public static synchronized Quiz getInstance(String serverId){
         if (!quizMap.containsKey(serverId)) {
@@ -48,6 +52,27 @@ public class Quiz {
         quizMap.remove(serverId);
         this.isQuizStarted = false;
     }
+    public boolean checkAnswer(String answer){
+        if(answer.equalsIgnoreCase(userAnswer)) {
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+    /*public CompletableFuture<Boolean> checkAnswer(String answer) {
+        CompletableFuture<Boolean> future = new CompletableFuture<>();
+        boolean isCorrect = false;
+        // 정답 확인 로직 수행
+        if(answer.equalsIgnoreCase(userAnswer)) {
+            isCorrect = true; // 정답 확인 결과
+        }
+
+        // 결과를 CompletableFuture에 설정
+        future.complete(isCorrect);
+
+        return future;
+    }*/
     public boolean checkQuiz(){
         return isQuizStarted;
     }
@@ -56,7 +81,45 @@ public class Quiz {
         this.channel = channel;
         this.lastUser = lastUser;
     }
+    public void setNextQuiz(boolean bool){
+        this.nextQuiz = bool;
+    }
     public void quizCycle() {
+        String question = "한국의 수도는?";
+        String answer = "서울";
+        AtomicInteger tIndex = new AtomicInteger(100); //10초
+
+        Thread quizThread = new Thread(() -> {
+            while (isQuizStarted) {
+                int currentIndex = tIndex.getAndAdd(-2); //-0.2초
+                if (currentIndex % 10 == 0 && currentIndex <= 30) {
+                    channel.sendMessage("남은 시간: " + currentIndex / 10).queue();
+                }
+                try {
+                    Thread.sleep(200); //0.2초딜레이
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+
+                if (currentIndex == 100) { //10초면 문제출제
+                    channel.sendMessage(question).queue();
+                    //answer = 새로운 답;
+                    userAnswer = null;
+                    // 문제 출제 & answer 변경
+                } else { //10초가 아니면 정답확인
+                    if (nextQuiz || currentIndex<=0) {
+                        channel.sendMessage("정답은 \"" + answer + "\" 였습니다.").queue();
+                        channel.sendMessage("다음 문제를 출제합니다.").queue();
+                        nextQuiz = false;
+                        tIndex.set(100);
+                        continue;
+                    }
+                }
+            }
+        });
+        quizThread.start();
+    }
+    /*public void quizCycle() {
         String question = "한국의 수도는?";
         String answer = "서울";
         AtomicInteger tIndex = new AtomicInteger(100);
@@ -90,7 +153,7 @@ public class Quiz {
             }
         });
         quizThread.start();
-    }
+    }*/
     /*public void quizCycle() {
         String question = "한국의 수도는?";
         String answer = "서울";
