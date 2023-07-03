@@ -19,6 +19,7 @@ public class MessageListener extends ListenerAdapter
         MessageChannelUnion channel = event.getChannel();
         String channelId = channel.getId();
         String messageContent = event.getMessage().getContentDisplay();
+        String userName = event.getAuthor().getName();
         Quiz quiz = Quiz.getInstance(serverId);
 
         if (event.isFromType(ChannelType.PRIVATE)) {
@@ -35,15 +36,15 @@ public class MessageListener extends ListenerAdapter
 
         if (quiz.checkQuiz()){ //퀴즈가 진행중이면
             //Todo: 퀴즈 진행 여기서 퀴즈가 정답인지 체크
-            quiz.setUserAnswer(messageContent, channel, event.getAuthor().getName());
             //channel.sendMessage("퀴즈 중").queue();
-            if(quiz.checkAnswer(messageContent)&&answerCount==0){
-                channel.sendMessage(event.getAuthor().getName()+"님 정답입니다!").queue();
+            if(quiz.checkAnswer(messageContent)&&!quiz.getNextQuiz()&&answerCount==0){
                 answerCount++;
                 quiz.setNextQuiz(true);
+                channel.sendMessage(event.getAuthor().getName()+"님 정답입니다!").queue();
+                quiz.setMember(userName);
+                answerCount=0;
                 return;
             }
-            
             if(messageContent.equals("퀴즈끝")){ //퀴즈 종료
                 quiz.endQuiz(serverId);
                 event.getChannel().sendMessage("퀴즈종료").queue();

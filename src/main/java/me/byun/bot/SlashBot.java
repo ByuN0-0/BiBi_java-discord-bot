@@ -118,6 +118,7 @@ public class SlashBot extends ListenerAdapter {
     public void quiz(SlashCommandInteractionEvent event){
         String serverId = event.getGuild().getId();
         Quiz serverQuiz = Quiz.getInstance(serverId);
+        serverQuiz.setChannel(event.getChannel());
         if(serverQuiz.checkQuiz()){
             event.reply("이미 진행중인 퀴즈가 있습니다.").setEphemeral(true).queue();
             return;

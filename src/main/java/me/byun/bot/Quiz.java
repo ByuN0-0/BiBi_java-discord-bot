@@ -15,9 +15,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class Quiz {
     private static Map<String, Quiz> quizMap = new HashMap<>();
-    private static Map<String, String> member = new HashMap<>();
+    private static Map<String, Integer> member = new HashMap<>();
     private String serverId;
     private String userAnswer;
+    private String answer;
     private String previousAnswer;
     private String lastUser;
     private boolean isQuizStarted;
@@ -53,12 +54,7 @@ public class Quiz {
         this.isQuizStarted = false;
     }
     public boolean checkAnswer(String answer){
-        if(answer.equalsIgnoreCase(userAnswer)) {
-            return true;
-        }
-        else{
-            return false;
-        }
+        return this.answer.equalsIgnoreCase(answer);
     }
     /*public CompletableFuture<Boolean> checkAnswer(String answer) {
         CompletableFuture<Boolean> future = new CompletableFuture<>();
@@ -76,44 +72,57 @@ public class Quiz {
     public boolean checkQuiz(){
         return isQuizStarted;
     }
-    public void setUserAnswer(String userAnswer, MessageChannelUnion channel, String lastUser){
-        this.userAnswer = userAnswer;
+    public void setChannel(MessageChannelUnion channel){
         this.channel = channel;
-        this.lastUser = lastUser;
+    }
+    public String getMember(){
+        String result = "";
+        for(String key : member.keySet()){
+            result += key + " : " + member.get(key) + "\n";
+        }
+        return result;
     }
     public void setNextQuiz(boolean bool){
         this.nextQuiz = bool;
     }
+    public boolean getNextQuiz(){
+        return this.nextQuiz;
+    }
+    public void setMember(String userName){
+        if(!member.containsKey(userName)){
+            member.put(userName, 1);
+            return;
+        }
+        int score = member.get(userName);
+        member.put(userName, score+1);
+    }
     public void quizCycle() {
         String question = "한국의 수도는?";
-        String answer = "서울";
+        this.answer = "서울";
         AtomicInteger tIndex = new AtomicInteger(100); //10초
 
         Thread quizThread = new Thread(() -> {
             while (isQuizStarted) {
-                int currentIndex = tIndex.getAndAdd(-2); //-0.2초
+                int currentIndex = tIndex.getAndAdd(-2); //-0.1초
+                if (currentIndex == 100) { //10초면 문제출제
+                    channel.sendMessage(question).queue();
+                    //answer = 새로운 답;
+                    // 문제 출제 & answer 변경
+                } else { //10초가 아니면 정답확인
+                    if (nextQuiz || currentIndex<=0) {
+                        channel.sendMessage("정답은 \"" + answer + "\" 였습니다.\n다음 문제를 출제합니다.").queue();
+                        nextQuiz = false;
+                        tIndex.set(200);
+                        continue;
+                    }
+                }
                 if (currentIndex % 10 == 0 && currentIndex <= 30) {
                     channel.sendMessage("남은 시간: " + currentIndex / 10).queue();
                 }
                 try {
-                    Thread.sleep(200); //0.2초딜레이
+                    Thread.sleep(10); //0.2초딜레이
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
-                }
-
-                if (currentIndex == 100) { //10초면 문제출제
-                    channel.sendMessage(question).queue();
-                    //answer = 새로운 답;
-                    userAnswer = null;
-                    // 문제 출제 & answer 변경
-                } else { //10초가 아니면 정답확인
-                    if (nextQuiz || currentIndex<=0) {
-                        channel.sendMessage("정답은 \"" + answer + "\" 였습니다.").queue();
-                        channel.sendMessage("다음 문제를 출제합니다.").queue();
-                        nextQuiz = false;
-                        tIndex.set(100);
-                        continue;
-                    }
                 }
             }
         });
