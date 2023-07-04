@@ -11,7 +11,6 @@ import java.util.*;
 
 public class MessageListener extends ListenerAdapter
 {
-    int answerCount = 0;
     @Override
     public void onMessageReceived(MessageReceivedEvent event)
     {
@@ -37,12 +36,11 @@ public class MessageListener extends ListenerAdapter
         if (quiz.checkQuiz()){ //퀴즈가 진행중이면
             //Todo: 퀴즈 진행 여기서 퀴즈가 정답인지 체크
             //channel.sendMessage("퀴즈 중").queue();
-            if(quiz.checkAnswer(messageContent)&&!quiz.getNextQuiz()&&answerCount==0){
-                answerCount++;
+            if(quiz.checkAnswer(messageContent)&&!quiz.getNextQuiz()){
+                quiz.addAnswerUser(userName);
                 quiz.setNextQuiz(true);
                 channel.sendMessage(event.getAuthor().getName()+"님 정답입니다!").queue();
                 quiz.setMember(userName);
-                answerCount=0;
                 return;
             }
             if(messageContent.equals("퀴즈끝")){ //퀴즈 종료
@@ -50,7 +48,6 @@ public class MessageListener extends ListenerAdapter
                 event.getChannel().sendMessage("퀴즈종료").queue();
                 return;
             }
-            resetAnswerCount();
         }
         else {
             replyEventMessage(event, messageContent);
@@ -65,8 +62,5 @@ public class MessageListener extends ListenerAdapter
             event.getChannel().sendMessage("바바잉!").queue();
             return;
         }
-    }
-    public void resetAnswerCount(){
-        answerCount = 0;
     }
 }

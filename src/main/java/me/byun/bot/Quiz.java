@@ -16,6 +16,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class Quiz {
     private static Map<String, Quiz> quizMap = new HashMap<>();
     private static Map<String, Integer> member = new HashMap<>();
+    private static Queue<String> answerQueue = new LinkedList<>();
     private String serverId;
     private String userAnswer;
     private String answer;
@@ -96,6 +97,15 @@ public class Quiz {
         int score = member.get(userName);
         member.put(userName, score+1);
     }
+    public void addAnswerUser(String answerUser){
+        answerQueue.add(answerUser);
+    }
+    public String getAnswerUser(){
+        return answerQueue.poll();
+    }
+    public void answerQueueClear(){
+        answerQueue.clear();
+    }
     public void quizCycle() {
         String question = "한국의 수도는?";
         this.answer = "서울";
@@ -110,9 +120,11 @@ public class Quiz {
                     // 문제 출제 & answer 변경
                 } else { //10초가 아니면 정답확인
                     if (nextQuiz || currentIndex<=0) {
-                        channel.sendMessage("정답은 \"" + answer + "\" 였습니다.\n다음 문제를 출제합니다.").queue();
+                        getAnswerUser();
+                        channel.sendMessage(getAnswerUser()+"님 정답입니다!\n정답은 \"" + answer + "\" 였습니다.\n다음 문제를 출제합니다.").queue();
                         nextQuiz = false;
                         tIndex.set(200);
+                        answerQueueClear();
                         continue;
                     }
                 }
