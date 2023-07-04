@@ -20,8 +20,6 @@ public class Quiz {
     private String serverId;
     private String userAnswer;
     private String answer;
-    private String previousAnswer;
-    private String lastUser;
     private boolean isQuizStarted;
     private MessageChannelUnion channel;
     private boolean nextQuiz;
@@ -30,8 +28,6 @@ public class Quiz {
         this.serverId = serverId;
         this.isQuizStarted = false;
         this.userAnswer = null;
-        this.previousAnswer = null;
-        this.lastUser = null;
         this.nextQuiz = false;
     }
     public static synchronized Quiz getInstance(String serverId){
@@ -57,19 +53,6 @@ public class Quiz {
     public boolean checkAnswer(String answer){
         return this.answer.equalsIgnoreCase(answer);
     }
-    /*public CompletableFuture<Boolean> checkAnswer(String answer) {
-        CompletableFuture<Boolean> future = new CompletableFuture<>();
-        boolean isCorrect = false;
-        // 정답 확인 로직 수행
-        if(answer.equalsIgnoreCase(userAnswer)) {
-            isCorrect = true; // 정답 확인 결과
-        }
-
-        // 결과를 CompletableFuture에 설정
-        future.complete(isCorrect);
-
-        return future;
-    }*/
     public boolean checkQuiz(){
         return isQuizStarted;
     }
@@ -110,33 +93,44 @@ public class Quiz {
         String question = "한국의 수도는?";
         this.answer = "서울";
         AtomicInteger tIndex = new AtomicInteger(100); //10초
-
+        AtomicInteger num = new AtomicInteger(1);
         Thread quizThread = new Thread(() -> {
             while (isQuizStarted) {
-                int currentIndex = tIndex.getAndAdd(-2); //-0.1초
+                int quizNum = num.get();
+                int currentIndex = tIndex.getAndAdd(-2); //-0.2초
+                try {
+                    Thread.sleep(200); //0.2초딜레이
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
                 if (currentIndex == 100) { //10초면 문제출제
-                    channel.sendMessage(question).queue();
+                    channel.sendMessage(quizNum + ". " + question).queue();
                     //answer = 새로운 답;
                     // 문제 출제 & answer 변경
                 } else { //10초가 아니면 정답확인
                     if (nextQuiz || currentIndex<=0) {
-                        getAnswerUser();
-                        channel.sendMessage(getAnswerUser()+"님 정답입니다!\n정답은 \"" + answer + "\" 였습니다.\n다음 문제를 출제합니다.").queue();
-                        nextQuiz = false;
-                        tIndex.set(200);
+                        if(nextQuiz) {
+                            String user = getAnswerUser();
+                            setMember(user);
+                            channel.sendMessage(user + "님 정답입니다!\n" + quizNum + "번 정답은 \"" + answer + "\" 입니다.\n다음 문제를 출제합니다.").queue();
+                            nextQuiz = false;
+                        }else {
+                            channel.sendMessage(quizNum +"번 정답은 \"" + answer + "\" 이었습니다.\n다음 문제를 출제합니다.").queue();
+                        }
+                        num.set(quizNum+1);
+                        tIndex.set(100);
                         answerQueueClear();
                         continue;
                     }
                 }
+                //if (currentIndex % 10 == 0) {
+                //    channel.sendMessage("남은 시간: " + currentIndex / 10).queue();
+                //}
                 if (currentIndex % 10 == 0 && currentIndex <= 30) {
                     channel.sendMessage("남은 시간: " + currentIndex / 10).queue();
                 }
-                try {
-                    Thread.sleep(10); //0.2초딜레이
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
             }
+            channel.sendMessage("퀴즈 종료됨요");
         });
         quizThread.start();
     }
