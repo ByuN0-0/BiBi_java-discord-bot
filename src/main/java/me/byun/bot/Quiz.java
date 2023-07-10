@@ -29,6 +29,7 @@ public class Quiz {
         this.isQuizStarted = false;
         this.userAnswer = null;
         this.nextQuiz = false;
+        loadQuiz();
     }
     public static synchronized Quiz getInstance(String serverId){
         if (!quizMap.containsKey(serverId)) {
@@ -36,6 +37,10 @@ public class Quiz {
             quizMap.put(serverId, quiz);
         }
         return quizMap.get(serverId);
+    }
+    private void loadQuiz(){
+        String strQuiz = txtReader.readToken("/quiz.txt");
+        String[] quiz = strQuiz.split("\n");
     }
     public void startQuiz(String serverId, MessageChannelUnion channel){
         this.channel = channel;
