@@ -64,11 +64,9 @@ public class MessageListener extends ListenerAdapter
     public void replyEventMessage(MessageReceivedEvent event, @NotNull String msg){
         if(msg.equals("조서연멍청이")) {
             event.getChannel().sendMessage("인졍!").queue();
-            return;
         }
         else if(msg.equals("빠이")) {
             event.getChannel().sendMessage("바바잉!").queue();
-            return;
         }
     }
 }

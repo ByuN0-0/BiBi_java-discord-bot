@@ -135,7 +135,6 @@ public class Quiz {
                     channel.sendMessage("남은 시간: " + currentIndex / 10).queue();
                 }
             }
-            channel.sendMessage("퀴즈 종료됨요");
         });
         quizThread.start();
     }
