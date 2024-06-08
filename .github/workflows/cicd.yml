@@ -25,11 +25,11 @@ jobs:
       - name: Check current directory contents
         run: ls -l
 
-      - name: Check ip
-        run: curl ifconfig.me
+      - name: kill existing process
+        run: pkill -f java || true
 
       - name: Build with Gradle
-        run: ./gradlew clean bootJar
+        run: ./gradlew clean jar
 
       - name: Set artifact
         run: echo "artifact=$(ls ./build/libs)" >> $GITHUB_ENV
