@@ -29,7 +29,7 @@ jobs:
         run: pkill -f java || true
 
       - name: Build with Gradle
-        run: ./gradlew clean jar
+        run: ./gradlew clean shadowJar
 
       - name: Set artifact
         run: echo "artifact=$(ls ./build/libs)" >> $GITHUB_ENV

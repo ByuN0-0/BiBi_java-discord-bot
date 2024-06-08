@@ -1,9 +1,25 @@
 plugins {
     id 'java'
     id 'application'
+    id 'com.github.johnrengelman.shadow' version '7.0.0'
 }
 application {
     mainClassName = 'me.byun.bot.Main'
+}
+jar {
+    manifest {
+        attributes 'Main-Class': 'me.byun.bot.Main'
+    }
+}
+tasks {
+    shadowJar {
+        manifest {
+            attributes 'Main-Class': 'me.byun.bot.Main'
+        }
+        archiveBaseName.set("app")
+        archiveClassifier.set("")
+        archiveVersion.set("1.0-SNAPSHOT")
+    }
 }
 group 'me.byun.bot'
 version '1.0-SNAPSHOT'
@@ -15,6 +31,9 @@ targetCompatibility = '21'
 repositories {
     mavenCentral()
 }
+
+
+
 
 dependencies {
     implementation "net.dv8tion:JDA:$jdaVersion" // jda
