@@ -10,7 +10,7 @@ import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.requests.restaction.CommandListUpdateAction;
 
 public class Main {
-    public static void main(String[] args){
+    public static void main(String[] args) {
         //String token = txtReader.readFile("src\\main\\java\\me\\byun\\bot\\botToken.txt");
         String token = txtReader.readToken("/botToken.txt");
         JDA jda = JDABuilder.createDefault(token)
@@ -23,8 +23,10 @@ public class Main {
         System.out.println("Execute normaly");
         CommandListUpdateAction commands = jda.updateCommands();
         loadCommands(commands);
-        System.out.println("Set Commands complete");
+        System.out.println("Set Commands complete" +
+                "final test complete");
     }
+
     // 슬래시 명령어를 추가하기 위해서는 commands.addCommands()를 사용해야 한다.
     // SlashBot 클래스에서 스위치문에 추가해야 한다.
     // SlashBot 클래스에서 함수를 추가해야한다.
