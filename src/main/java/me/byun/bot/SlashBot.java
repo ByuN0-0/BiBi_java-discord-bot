@@ -11,28 +11,14 @@ import java.util.*;
 
 public class SlashBot extends ListenerAdapter {
     public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
-        switch (event.getName()){
-            case "ping":
-                ping(event);
-                break;
-            case "team":
-                team(event);
-                break;
-            case "lotto":
-                lotto(event);
-                break;
-            case "점메추":
-            case "저메추":
-                recommendFood(event);
-                break;
-            case "quiz":
-                quiz(event);
-                break;
-            case "clear":
-                clear(event);
-                break;
-            default:
-                event.reply("I can't handle that command right now :(").setEphemeral(true).queue();
+        switch (event.getName()) {
+            case "ping" -> ping(event);
+            case "team" -> team(event);
+            case "lotto" -> lotto(event);
+            case "점메추", "저메추" -> recommendFood(event);
+            case "quiz" -> quiz(event);
+            case "clear" -> clear(event);
+            default -> event.reply("I can't handle that command right now :(").setEphemeral(true).queue();
         }
     }
 
@@ -44,7 +30,7 @@ public class SlashBot extends ListenerAdapter {
                 ).queue();
     }
     public void team(SlashCommandInteractionEvent event){
-        String str = event.getOption("players").getAsString();
+        String str = Objects.requireNonNull(event.getOption("players")).getAsString();
         String msg = "입력: " + str;
         String[] players = str.split(" ");
         if (players.length%2!=0){
@@ -67,12 +53,11 @@ public class SlashBot extends ListenerAdapter {
                 team2.add(playerList.get(i));
             }
         }
-        StringBuilder result = new StringBuilder();
-        result.append(msg+"\n");
-        result.append("team 1: ").append(String.join(", ", team1)).append("\n");
-        result.append("team 2: ").append(String.join(", ", team2));
+        String result = msg + "\n" +
+                "team 1: " + String.join(", ", team1) + "\n" +
+                "team 2: " + String.join(", ", team2);
 
-        event.reply(result.toString()).setEphemeral(false).queue();
+        event.reply(result).setEphemeral(false).queue();
     }
     public void lotto(SlashCommandInteractionEvent event) {
         int[] num = new int[6];
@@ -116,7 +101,7 @@ public class SlashBot extends ListenerAdapter {
     }
     //Todo: quiz
     public void quiz(SlashCommandInteractionEvent event){
-        String serverId = event.getGuild().getId();
+        String serverId = Objects.requireNonNull(event.getGuild()).getId();
         Quiz serverQuiz = Quiz.getInstance(serverId);
         serverQuiz.setChannel(event.getChannel());
         if(serverQuiz.checkQuiz()){
@@ -127,8 +112,8 @@ public class SlashBot extends ListenerAdapter {
         event.reply("퀴즈를 시작합니다!").setEphemeral(false).queue();
     }
     public void clear(SlashCommandInteractionEvent event) {
-        int amount = event.getOption("amount").getAsInt();
-        Member selfMember = event.getGuild().getSelfMember();
+        int amount = Objects.requireNonNull(event.getOption("amount")).getAsInt();
+        Member selfMember = Objects.requireNonNull(event.getGuild()).getSelfMember();
         if (selfMember.hasPermission((GuildChannel) event.getChannel(), Permission.MESSAGE_MANAGE)) {
             event.getChannel().getHistory().retrievePast(amount).queue(messages -> {
                 for (Message message : messages) {

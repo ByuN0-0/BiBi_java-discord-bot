@@ -1,33 +1,23 @@
 package me.byun.bot;
 
-import net.dv8tion.jda.api.entities.channel.Channel;
-import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
 import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
-import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.util.*;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Quiz {
-    private static Map<String, Quiz> quizMap = new HashMap<>();
-    private static Map<String, Integer> member = new HashMap<>();
-    private static Queue<String> answerQueue = new LinkedList<>();
-    private String serverId;
-    private String userAnswer;
+    private static final Map<String, Quiz> quizMap = new HashMap<>();
+    private static final Map<String, Integer> member = new HashMap<>();
+    private static final Queue<String> answerQueue = new LinkedList<>();
     private String answer;
     private boolean isQuizStarted;
     private MessageChannelUnion channel;
     private boolean nextQuiz;
 
     private Quiz(String serverId){
-        this.serverId = serverId;
         this.isQuizStarted = false;
-        this.userAnswer = null;
+        String userAnswer = null;
         this.nextQuiz = false;
         loadQuiz();
     }
@@ -65,11 +55,11 @@ public class Quiz {
         this.channel = channel;
     }
     public String getMember(){
-        String result = "";
+        StringBuilder result = new StringBuilder();
         for(String key : member.keySet()){
-            result += key + " : " + member.get(key) + "\n";
+            result.append(key).append(" : ").append(member.get(key)).append("\n");
         }
-        return result;
+        return result.toString();
     }
     public void setNextQuiz(boolean bool){
         this.nextQuiz = bool;

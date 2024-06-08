@@ -1,24 +1,24 @@
 plugins {
     id 'java'
     id 'application'
-    id 'com.github.johnrengelman.shadow' version '5.2.0'
 }
 application {
     mainClassName = 'me.byun.bot.Main'
 }
 group 'me.byun.bot'
 version '1.0-SNAPSHOT'
-def jdaVersion = '5.0.0-beta.10'
+def jdaVersion = '5.0.0-beta.24'
 
-sourceCompatibility = targetCompatibility = 1.8
+sourceCompatibility = '21'
+targetCompatibility = '21'
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    implementation "net.dv8tion:JDA:5.0.0-beta.10" // jda
-    implementation "ch.qos.logback:logback-classic:1.2.8" //로그백
+    implementation "net.dv8tion:JDA:$jdaVersion" // jda
+    implementation 'ch.qos.logback:logback-classic:1.4.12' //로그백
 
 }
 

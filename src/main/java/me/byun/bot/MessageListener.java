@@ -11,7 +11,7 @@ import java.util.*;
 
 public class MessageListener extends ListenerAdapter
 {
-    private static Queue<String> answerQueue = new LinkedList<>();
+    private static final Queue<String> answerQueue = new LinkedList<>();
     @Override
     public void onMessageReceived(MessageReceivedEvent event)
     {
@@ -29,7 +29,7 @@ public class MessageListener extends ListenerAdapter
         }
         else {
             System.out.printf("[Server: %s, Channel: %s] (User) %s: %s\n", event.getGuild().getName(),
-                    channel.getName(), event.getMember().getEffectiveName(),
+                    channel.getName(), Objects.requireNonNull(event.getMember()).getEffectiveName(),
                     event.getMessage().getContentDisplay());
         }
 
