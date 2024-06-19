@@ -27,8 +27,6 @@ jobs:
             echo "${{ secrets.BOT_TOKEN }}" > botToken.txt
             cd $HOME/javadiscordbot
             chmod +x ./gradlew
-            ./gradlew clean
-            ./gradlew shadowJar
-            nohup java -jar build/libs/app-1.0-SNAPSHOT.jar &
-            
-            
+            cd $HOME
+            bash killBot.sh
+            bash executeBot.sh
