@@ -6,7 +6,6 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3.3.0
@@ -19,13 +18,17 @@ jobs:
           key: ${{ secrets.GCP_SSH_KEY }}
           port: 22
           script: |
-            whoami
-            cd ~/javadiscordbot
+            source "$HOME/.sdkman/bin/sdkman-init.sh"
+            export JAVA_HOME="$HOME/.sdkman/candidates/java/current"
+            
+            cd $HOME/javadiscordbot
             git pull
-            cd ~/javadiscordbot/src/main/resources
-            echo ${{ secrets.BOT_TOKEN }} > bot_token.txt
-            cd ~/javadiscordbot
-            ./gradlew clean build
-            pkill java
-            nohup java -jar build/libs/byunbot-1.0-SNAPSHOT.jar &
+            cd $HOME/javadiscordbot/src/main/resources
+            echo "${{ secrets.BOT_TOKEN }}" > botToken.txt
+            cd $HOME/javadiscordbot
+            chmod +x ./gradlew
+            ./gradlew clean
+            ./gradlew shadowJar
+            nohup java -jar build/libs/app-1.0-SNAPSHOT.jar &
+            
             
