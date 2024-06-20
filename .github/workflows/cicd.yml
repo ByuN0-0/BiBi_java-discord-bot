@@ -17,16 +17,10 @@ jobs:
           java-version: '21'
 
       - name: Install SDKMAN
-        run: curl -s "https://get.sdkman.io" | bash
-
-      - name: Load SDKMAN
-        run: source "$HOME/.sdkman/bin/sdkman-init.sh"
-
-      - name: Install Gradle
-        run: sdk install gradle
-
-      - name: Install dependencies
-        run: sdk install java 21.0.0.r11-grl
+        run: |
+          curl -s "https://get.sdkman.io" | bash
+          source "$HOME/.sdkman/bin/sdkman-init.sh"
+          sdk install gradle
 
       - name: Build with Gradle
         run: ./gradlew build
