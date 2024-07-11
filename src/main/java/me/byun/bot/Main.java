@@ -8,8 +8,12 @@ import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.requests.restaction.CommandListUpdateAction;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 public class Main {
+    private static final Logger logger = LoggerFactory.getLogger(Main.class);
     public static void main(String[] args) {
         //String token = txtReader.readFile("src\\main\\java\\me\\byun\\bot\\botToken.txt");
         String token = txtReader.readToken("/botToken.txt");
@@ -19,12 +23,10 @@ public class Main {
                 .addEventListeners(new SlashBot())
                 .setActivity(Activity.playing("현재 초기 개발"))
                 .build();// enables explicit access to message.getContentDisplay()
-        System.out.println("Build complete");
-        System.out.println("Execute normaly");
-        CommandListUpdateAction commands = jda.updateCommands();
-        loadCommands(commands);
-        System.out.println("Set Commands complete" +
-                "final test complete");
+        logger.info("Bot is ready");
+
+        loadCommands(jda.updateCommands());
+        logger.info("Commands are loaded");
     }
 
     // 슬래시 명령어를 추가하기 위해서는 commands.addCommands()를 사용해야 한다.

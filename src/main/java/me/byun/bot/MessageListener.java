@@ -6,11 +6,13 @@ import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
-public class MessageListener extends ListenerAdapter
-{
+public class MessageListener extends ListenerAdapter{
+    private static final Logger logger = LoggerFactory.getLogger(Main.class);
     private static final Queue<String> answerQueue = new LinkedList<>();
     @Override
     public void onMessageReceived(MessageReceivedEvent event)
@@ -24,13 +26,11 @@ public class MessageListener extends ListenerAdapter
 
         if (event.getAuthor().isBot()) return;
         if (event.isFromType(ChannelType.PRIVATE)) {
-            System.out.printf("개인채널 [PM] %s: %s\n", event.getAuthor().getName(),
-                    event.getMessage().getContentDisplay());
+            logger.info("[PM] {} : {}", event.getAuthor().getName(), event.getMessage().getContentDisplay());
         }
         else {
-            System.out.printf("[Server: %s, Channel: %s] (User) %s: %s\n", event.getGuild().getName(),
-                    channel.getName(), Objects.requireNonNull(event.getMember()).getEffectiveName(),
-                    event.getMessage().getContentDisplay());
+            logger.info("[Server: {}, Channel: {}] (User) {} : {}", event.getGuild().getName(), channel.getName(),
+                    Objects.requireNonNull(event.getMember()).getEffectiveName(), event.getMessage().getContentDisplay());
         }
 
         if (quiz.checkQuiz()){ //퀴즈가 진행중이면

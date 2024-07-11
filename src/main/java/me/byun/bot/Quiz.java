@@ -99,7 +99,8 @@ public class Quiz {
                     throw new RuntimeException(e);
                 }
                 if (currentIndex == 100) { //10초면 문제출제
-                    channel.sendMessage(quizNum + ". " + question).queue();
+                    channel.sendMessage(quizNum + ". " + question + " 퀴즈 종료를 원하시면 \"퀴즈 종료\"를 입력해주세요.").queue();
+                    answerQueueClear();
                     //answer = 새로운 답;
                     // 문제 출제 & answer 변경
                 } else { //10초가 아니면 정답확인

@@ -37,7 +37,8 @@ repositories {
 
 dependencies {
     implementation "net.dv8tion:JDA:$jdaVersion" // jda
-    implementation 'ch.qos.logback:logback-classic:1.4.12' //로그백
+    implementation 'org.slf4j:slf4j-api:2.0.13' // 최신 버전을 확인하세요
+    implementation 'ch.qos.logback:logback-classic:1.4.12' // 최신 버전을 확인하세요
 
 }
 
