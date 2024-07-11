@@ -42,9 +42,9 @@ public class MessageListener extends ListenerAdapter{
                 //channel.sendMessage(event.getAuthor().getName()+"님 정답입니다!").queue();
                 return;
             }
-            if(messageContent.equals("퀴즈끝")){ //퀴즈 종료
+            if(messageContent.equals("퀴즈 종료")){ //퀴즈 종료
                 quiz.endQuiz(serverId);
-                event.getChannel().sendMessage("퀴즈종료").queue();
+                event.getChannel().sendMessage("퀴즈 종료").queue();
                 return;
             }
         }

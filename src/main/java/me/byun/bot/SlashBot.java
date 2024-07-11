@@ -113,6 +113,10 @@ public class SlashBot extends ListenerAdapter {
     }
     public void clear(SlashCommandInteractionEvent event) {
         int amount = Objects.requireNonNull(event.getOption("amount")).getAsInt();
+        if (amount>20) {
+            event.reply("20개 이상의 채팅을 삭제할 수 없습니다.").setEphemeral(true).queue();
+            return;
+        }
         Member selfMember = Objects.requireNonNull(event.getGuild()).getSelfMember();
         if (selfMember.hasPermission((GuildChannel) event.getChannel(), Permission.MESSAGE_MANAGE)) {
             event.getChannel().getHistory().retrievePast(amount).queue(messages -> {
