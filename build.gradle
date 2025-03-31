@@ -3,14 +3,29 @@ plugins {
     id 'application'
     id 'com.github.johnrengelman.shadow' version '7.0.0'
 }
+
+// Gradle 출력 버퍼링 비활성화
+tasks.withType(JavaExec) {
+    standardOutput = System.out
+    errorOutput = System.err
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
 application {
     mainClassName = 'me.byun.bot.Main'
 }
+
 jar {
     manifest {
         attributes 'Main-Class': 'me.byun.bot.Main'
     }
 }
+
 tasks {
     shadowJar {
         manifest {
@@ -21,9 +36,10 @@ tasks {
         archiveVersion.set("1.0-SNAPSHOT")
     }
 }
+
 group 'me.byun.bot'
 version '1.0-SNAPSHOT'
-def jdaVersion = '5.0.0-beta.24'
+def jdaVersion = '5.3.1'
 
 sourceCompatibility = '21'
 targetCompatibility = '21'
@@ -32,14 +48,11 @@ repositories {
     mavenCentral()
 }
 
-
-
-
 dependencies {
     implementation "net.dv8tion:JDA:$jdaVersion" // jda
-    implementation 'org.slf4j:slf4j-api:2.0.13' // 최신 버전을 확인하세요
-    implementation 'ch.qos.logback:logback-classic:1.4.12' // 최신 버전을 확인하세요
-
+    implementation 'org.slf4j:slf4j-api:2.0.13' // slf4j
+    implementation 'ch.qos.logback:logback-classic:1.4.14' // logback
+    implementation 'io.github.cdimascio:dotenv-java:3.0.0' // dotenv 라이브러리
 }
 
 test {

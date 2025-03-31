@@ -11,62 +11,44 @@ import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
-public class MessageListener extends ListenerAdapter{
+public class MessageListener extends ListenerAdapter {
     private static final Logger logger = LoggerFactory.getLogger(Main.class);
-    private static final Queue<String> answerQueue = new LinkedList<>();
+    private static final Map<String, String> RESPONSE_MESSAGES = new HashMap<>();
+
+    static {
+        RESPONSE_MESSAGES.put("조서연멍청이", "인졍!");
+        RESPONSE_MESSAGES.put("빠이", "바바잉!");
+    }
+
     @Override
-    public void onMessageReceived(MessageReceivedEvent event)
-    {
-        String serverId = event.getGuild().getId();
-        MessageChannelUnion channel = event.getChannel();
-        String channelId = channel.getId();
-        String messageContent = event.getMessage().getContentDisplay();
-        String userName = event.getAuthor().getName();
-        Quiz quiz = Quiz.getInstance(serverId);
-
+    public void onMessageReceived(MessageReceivedEvent event) {
         if (event.getAuthor().isBot()) return;
-        if (event.isFromType(ChannelType.PRIVATE)) {
-            logger.info("[PM] {} : {}", event.getAuthor().getName(), event.getMessage().getContentDisplay());
-        }
-        else {
-            logger.info("[Server: {}, Channel: {}] (User) {} : {}", event.getGuild().getName(), channel.getName(),
-                    Objects.requireNonNull(event.getMember()).getEffectiveName(), event.getMessage().getContentDisplay());
-        }
 
-        if (quiz.checkQuiz()){ //퀴즈가 진행중이면
-            //Todo: 퀴즈 진행 여기서 퀴즈가 정답인지 체크
-            //channel.sendMessage("퀴즈 중").queue();
-            if(quiz.checkAnswer(messageContent)&&!quiz.getNextQuiz()){ //정답이고 퀴즈 진행중이면
-                quiz.addAnswerUser(userName);
-                quiz.setNextQuiz(true);
-                //channel.sendMessage(event.getAuthor().getName()+"님 정답입니다!").queue();
-                return;
-            }
-            if(messageContent.equals("퀴즈 종료")){ //퀴즈 종료
-                quiz.endQuiz(serverId);
-                event.getChannel().sendMessage("퀴즈 종료").queue();
-                return;
-            }
+        logMessage(event);
+        handleMessage(event);
+    }
+
+    private void logMessage(MessageReceivedEvent event) {
+        String messageContent = event.getMessage().getContentDisplay();
+        String authorName = event.getAuthor().getName();
+
+        if (event.isFromType(ChannelType.PRIVATE)) {
+            logger.info("[PM] {} : {}", authorName, messageContent);
+        } else {
+            logger.info("[Server: {}, Channel: {}] (User) {} : {}",
+                event.getGuild().getName(),
+                event.getChannel().getName(),
+                Objects.requireNonNull(event.getMember()).getEffectiveName(),
+                messageContent);
         }
-        else {
-            replyEventMessage(event, messageContent);
-        }
     }
-    public void addAnswerUser(String answerUser){
-        answerQueue.add(answerUser);
-    }
-    public String getAnswerUser(){
-        return answerQueue.poll();
-    }
-    public void answerQueueClear(){
-        answerQueue.clear();
-    }
-    public void replyEventMessage(MessageReceivedEvent event, @NotNull String msg){
-        if(msg.equals("조서연멍청이")) {
-            event.getChannel().sendMessage("인졍!").queue();
-        }
-        else if(msg.equals("빠이")) {
-            event.getChannel().sendMessage("바바잉!").queue();
+
+    private void handleMessage(MessageReceivedEvent event) {
+        String messageContent = event.getMessage().getContentDisplay();
+        String response = RESPONSE_MESSAGES.get(messageContent);
+
+        if (response != null) {
+            event.getChannel().sendMessage(response).queue();
         }
     }
 }

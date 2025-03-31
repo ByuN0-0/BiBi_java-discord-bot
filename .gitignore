@@ -1,5 +1,6 @@
 botToken.txt
 lolToken.txt
+.env
 
 build/
 
@@ -12,3 +13,5 @@ out/
 .gradle/
 build/
 bin/
+
+.vscode/
