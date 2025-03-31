@@ -1,11 +1,8 @@
 package me.byun.bot;
 
 import net.dv8tion.jda.api.entities.channel.ChannelType;
-import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
-import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,7 +13,6 @@ public class MessageListener extends ListenerAdapter {
     private static final Map<String, String> RESPONSE_MESSAGES = new HashMap<>();
 
     static {
-        RESPONSE_MESSAGES.put("조서연멍청이", "인졍!");
         RESPONSE_MESSAGES.put("빠이", "바바잉!");
     }
 

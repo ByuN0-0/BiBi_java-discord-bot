@@ -2,7 +2,6 @@ package me.byun.bot;
 
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.channel.middleman.GuildChannel;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -16,7 +15,14 @@ public class SlashBot extends ListenerAdapter {
     private static final String[] FOODS = {
             "피자", "햄버거", "스테이크", "돈까스", "파스타", "쌀국수", "샐러드", "마라탕", "스시", "타코",
             "카레", "라면", "떡볶이", "비빔밥", "김치찌개", "부대찌개", "삼계탕", "해장국", "볶음밥",
-            "우동", "곱창", "닭갈비", "갈비찜", "냉면", "삼겹살", "굶어", "양꼬치", "곱도리탕"
+            "우동", "곱창", "닭갈비", "갈비찜", "냉면", "삼겹살", "굶어", "양꼬치", "곱도리탕",
+            "치킨", "족발", "보쌈", "닭발", "오뎅", "순대", "김밥", "초밥", "회", "초계탕",
+            "칼국수", "잔치국수", "비빔국수", "쫄면", "짜장면", "짬뽕", "탕수육", "마라샹궈", "마라탕",
+            "샤브샤브", "훠궈", "양고기", "고기국수", "육개장", "설렁탕", "갈비탕", "도가니탕",
+            "부대찌개", "김치찌개", "된장찌개", "순두부찌개", "부대찌개", "참치찌개", "고추장찌개",
+            "제육볶음", "오징어볶음", "낙지볶음", "닭볶음탕", "고추잡채", "잡채", "볶음밥",
+            "김치볶음밥", "새우볶음밥", "치킨볶음밥", "돈부리", "오코노미야키", "타코야키",
+            "라멘", "우동", "소바", "오니기리", "김치찌개", "부대찌개", "김치찌개", "부대찌개"
     };
 
     @Override
