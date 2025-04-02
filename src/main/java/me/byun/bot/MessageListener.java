@@ -10,7 +10,8 @@ import java.util.*;
 import javax.annotation.Nonnull;
 
 public class MessageListener extends ListenerAdapter {
-  private static final Logger logger = LoggerFactory.getLogger(Main.class);
+  private static final Logger logger = LoggerFactory
+      .getLogger(Main.class);
   private static final Map<String, String> RESPONSE_MESSAGES = new HashMap<>();
 
   static {
@@ -33,8 +34,11 @@ public class MessageListener extends ListenerAdapter {
     if (event.isFromType(ChannelType.PRIVATE)) {
       logger.info("[PM] {} : {}", authorName, messageContent);
     } else {
-      logger.info("[Server: {}, Channel: {}] (User) {} : {}", event.getGuild().getName(), event.getChannel().getName(),
-          Objects.requireNonNull(event.getMember()).getEffectiveName(), messageContent);
+      logger.info("[Server: {}, Channel: {}] (User) {} : {}",
+          event.getGuild().getName(), event.getChannel().getName(),
+          Objects.requireNonNull(event.getMember())
+              .getEffectiveName(),
+          messageContent);
     }
   }
 
