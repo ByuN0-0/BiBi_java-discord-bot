@@ -23,6 +23,8 @@ Discord 봇 프로젝트입니다.
 
 ```bash
 java -jar build/libs/app-1.0-SNAPSHOT.jar
+
+nohup java -jar build/libs/app-1.0-SNAPSHOT.jar &
 ```
 
 ### 2. Gradle로 실행 (개발용)

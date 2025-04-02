@@ -7,6 +7,7 @@ import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEve
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 import java.util.*;
+import javax.annotation.Nonnull;
 
 public class SlashBot extends ListenerAdapter {
     private static final int MAX_CLEAR_AMOUNT = 20;
@@ -26,7 +27,7 @@ public class SlashBot extends ListenerAdapter {
     };
 
     @Override
-    public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
+    public void onSlashCommandInteraction(@Nonnull SlashCommandInteractionEvent event) {
         try {
             switch (event.getName()) {
                 case "ping" -> ping(event);
