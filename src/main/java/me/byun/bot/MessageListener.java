@@ -7,7 +7,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
-import javax.annotation.Nonnull;
 
 public class MessageListener extends ListenerAdapter {
   private static final Logger logger = LoggerFactory
@@ -19,7 +18,7 @@ public class MessageListener extends ListenerAdapter {
   }
 
   @Override
-  public void onMessageReceived(@Nonnull MessageReceivedEvent event) {
+  public void onMessageReceived(MessageReceivedEvent event) {
     if (event.getAuthor().isBot())
       return;
 

@@ -24,6 +24,7 @@ public class Main {
           "player들을 공백으로 구분해주세요\n ex: person1 person2 person3 ... ")
               .setRequired(true)),
       Commands.slash("lotto", "recommend lotto number"),
+      Commands.slash("아메추", "아침 메뉴 추천"),
       Commands.slash("점메추", "점심 메뉴 추천"),
       Commands.slash("저메추", "저녁 메뉴 추천"),
       Commands.slash("clear", "채팅을 지워줍니다.")
