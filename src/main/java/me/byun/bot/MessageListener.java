@@ -10,42 +10,40 @@ import java.util.*;
 import javax.annotation.Nonnull;
 
 public class MessageListener extends ListenerAdapter {
-    private static final Logger logger = LoggerFactory.getLogger(Main.class);
-    private static final Map<String, String> RESPONSE_MESSAGES = new HashMap<>();
+  private static final Logger logger = LoggerFactory.getLogger(Main.class);
+  private static final Map<String, String> RESPONSE_MESSAGES = new HashMap<>();
 
-    static {
-        RESPONSE_MESSAGES.put("빠이", "바바잉!");
+  static {
+    RESPONSE_MESSAGES.put("빠이", "바바잉!");
+  }
+
+  @Override
+  public void onMessageReceived(@Nonnull MessageReceivedEvent event) {
+    if (event.getAuthor().isBot())
+      return;
+
+    logMessage(event);
+    handleMessage(event);
+  }
+
+  private void logMessage(MessageReceivedEvent event) {
+    String messageContent = event.getMessage().getContentDisplay();
+    String authorName = event.getAuthor().getName();
+
+    if (event.isFromType(ChannelType.PRIVATE)) {
+      logger.info("[PM] {} : {}", authorName, messageContent);
+    } else {
+      logger.info("[Server: {}, Channel: {}] (User) {} : {}", event.getGuild().getName(), event.getChannel().getName(),
+          Objects.requireNonNull(event.getMember()).getEffectiveName(), messageContent);
     }
+  }
 
-    @Override
-    public void onMessageReceived(@Nonnull MessageReceivedEvent event) {
-        if (event.getAuthor().isBot()) return;
+  private void handleMessage(MessageReceivedEvent event) {
+    String messageContent = event.getMessage().getContentDisplay();
+    String response = RESPONSE_MESSAGES.get(messageContent);
 
-        logMessage(event);
-        handleMessage(event);
+    if (response != null) {
+      event.getChannel().sendMessage(response).queue();
     }
-
-    private void logMessage(MessageReceivedEvent event) {
-        String messageContent = event.getMessage().getContentDisplay();
-        String authorName = event.getAuthor().getName();
-
-        if (event.isFromType(ChannelType.PRIVATE)) {
-            logger.info("[PM] {} : {}", authorName, messageContent);
-        } else {
-            logger.info("[Server: {}, Channel: {}] (User) {} : {}",
-                event.getGuild().getName(),
-                event.getChannel().getName(),
-                Objects.requireNonNull(event.getMember()).getEffectiveName(),
-                messageContent);
-        }
-    }
-
-    private void handleMessage(MessageReceivedEvent event) {
-        String messageContent = event.getMessage().getContentDisplay();
-        String response = RESPONSE_MESSAGES.get(messageContent);
-
-        if (response != null) {
-            event.getChannel().sendMessage(response).queue();
-        }
-    }
+  }
 }
