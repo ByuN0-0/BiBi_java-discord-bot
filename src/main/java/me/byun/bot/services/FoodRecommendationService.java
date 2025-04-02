@@ -126,4 +126,17 @@ public class FoodRecommendationService {
     return new ArrayList<>(uniqueFoods)
         .get(random.nextInt(uniqueFoods.size()));
   }
+
+  /**
+   * 특정 카테고리의 음식 목록을 반환합니다.
+   *
+   * @param category 음식 카테고리(한식, 중식, 일식, 양식 등)
+   * @return 해당 카테고리의 음식 목록
+   */
+  public List<String> getFoodsByCategory(String category) {
+    if (FOOD_CATEGORIES.containsKey(category)) {
+      return new ArrayList<>(FOOD_CATEGORIES.get(category));
+    }
+    return new ArrayList<>();
+  }
 }

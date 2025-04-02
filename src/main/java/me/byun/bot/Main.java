@@ -27,6 +27,10 @@ public class Main {
       Commands.slash("아메추", "아침 메뉴 추천"),
       Commands.slash("점메추", "점심 메뉴 추천"),
       Commands.slash("저메추", "저녁 메뉴 추천"),
+      Commands.slash("한식", "한식 메뉴 리스트"),
+      Commands.slash("중식", "중식 메뉴 리스트"),
+      Commands.slash("일식", "일식 메뉴 리스트"),
+      Commands.slash("양식", "양식 메뉴 리스트"),
       Commands.slash("clear", "채팅을 지워줍니다.")
           .addOptions(new OptionData(OptionType.INTEGER, "amount",
               "지울 채팅의 개수를 입력해주세요").setRequired(true)) };
